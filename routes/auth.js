@@ -31,7 +31,10 @@ router.post("/login", async (req, res) => {
     y se guarda en usar */
     const user = await User.findOne({ username: req.body.username });
     //si no hay usuario
-    !user && res.status(401).json("Wrong Credentials! (User)");
+    if (!user) {
+      res.status(401).json({ msg: "Wrong Credentials! (User)" });
+      return;
+    }
 
     //descencryptar la contraseña
     const hashedPassword = CryptoJS.AES.decrypt(
@@ -41,8 +44,10 @@ router.post("/login", async (req, res) => {
     /*la convertimos a string toString(), 
     CryptoJS.enc.Utf8 sirve para caracteres especiales*/
     const deshashPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
-    deshashPassword !== req.body.password &&
-      res.status(401).json("Wrong Credentials! (Password)");
+    if (deshashPassword !== req.body.password) {
+      res.status(401).json({ msg: "Wrong Credentials! (Password)" });
+      return;
+    }
 
     /*Creamos el jwt */
     const accessToken = jwt.sign(
@@ -61,7 +66,7 @@ router.post("/login", async (req, res) => {
     const { password, ...others } = user._doc;
     res.status(200).json({ ...others, accessToken });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json("Error user doesn't exist");
   }
 });
 
