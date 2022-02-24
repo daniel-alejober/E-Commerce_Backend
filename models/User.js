@@ -23,6 +23,9 @@ const UserSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    img: {
+      type: String,
+    },
   },
   /*timestamps sustituye default:Date.now() ya que crea un objeto con un id donde se almacenara la
   fecha */
