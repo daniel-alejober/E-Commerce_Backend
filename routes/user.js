@@ -74,6 +74,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
 router.get("/stats", verifyTokenAndAdmin, async (req, res) => {
   const date = new Date();
   const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
+
   try {
     /*vamos a agrupar los datos para eso usamos,
     $macth la coincidencia, de cuando fue que se creo el usuario con respecto del año pasado,
@@ -91,7 +92,7 @@ router.get("/stats", verifyTokenAndAdmin, async (req, res) => {
       a sumar 1 */
       {
         $group: {
-          _id: " $month",
+          _id: "$month",
           total: { $sum: 1 },
         },
       },

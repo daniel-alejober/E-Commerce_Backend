@@ -93,7 +93,7 @@ router.get("/income", verifyTokenAndAdmin, async (req, res) => {
       a sumar todas las ventas */
       {
         $group: {
-          _id: " $month",
+          _id: "$month",
           total: { $sum: "$sales" },
         },
       },
