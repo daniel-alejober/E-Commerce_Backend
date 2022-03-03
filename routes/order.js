@@ -74,6 +74,10 @@ router.get("/income", verifyTokenAndAdmin, async (req, res) => {
   const date = new Date();
   const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
   const previousMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
+  /*
+   *Vamos a tomar el id del producto que viene por query "?",
+   *---n.e.e.-- */
+  const productId = req.query.pid;
   try {
     /*vamos a agrupar los datos para eso usamos,
     $macth la coincidencia, de cuando fue que se crado respecto del mes pasado,
@@ -82,7 +86,14 @@ router.get("/income", verifyTokenAndAdmin, async (req, res) => {
      $createdAd que esta en la db, y las ventas que se han hecho en ese mes $amount esta
      definida en eL MODELO*/
     const income = await Order.aggregate([
-      { $match: { createdAt: { $gte: previousMonth } } },
+      {
+        $match: {
+          createdAt: { $gte: previousMonth },
+          ...(productId && {
+            products: { $elemMatch: { productId } },
+          }),
+        },
+      },
       {
         $project: {
           month: { $month: "$createdAt" },
